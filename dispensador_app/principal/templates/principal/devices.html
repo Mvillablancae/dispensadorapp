@@ -1,0 +1,10 @@
+{% extends "principal/base.html" %}
+{% block content %}
+    <h1>Dispositivos</h1>
+    {% for device in devices %}
+        {% if device.owner == user.username %}
+            <h2>Raspberry {{user.id}}: {{ device.ip_addr }}</h2>
+        {% endif %}
+    {% endfor %}
+{% endblock content %}
+

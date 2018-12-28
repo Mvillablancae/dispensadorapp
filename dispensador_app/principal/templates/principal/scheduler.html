@@ -1,0 +1,26 @@
+{% extends "principal/base.html" %}
+{% block content %}
+    <h1>Programa</h1>
+        Dispositivo: <input type="text" name="fname" id="device"><br>
+        Hora: <input type="text" name="lname" id="hour" placeholder="22:30"><br>
+        Fecha: <input type="text" name="sname" id="date" placeholder="01-01-2019"><br>
+        <input type="submit" value="Programar" onclick="sendData()">
+    <script>
+        var ws = new WebSocket("ws://127.0.0.1:5678/");
+        var messages = document.createElement('ul');
+        ws.onmessage = function (event) {
+            //Manejo de Mensaje (Nueva conexión, Nuevo horario o reseteo de horario)
+            console.log(event.data);
+            var messages = document.getElementsByTagName('ul')[0],
+            message = document.createElement('li'),
+            content = document.createTextNode(event.data);
+            message.appendChild(content);
+            messages.appendChild(message);
+        };
+        function sendData(){
+            ws.send(document.getElementById("device").value+"_"+document.getElementById("hour").value+"_"+document.getElementById("date").value+"\n")
+        }
+        document.body.appendChild(messages);
+    </script>
+{% endblock content %}
+
