@@ -13,6 +13,7 @@ async def echo(websocket, path):
     async for message in websocket:
         async with AIOFile("tareas.txt", 'a+') as afp:
             await afp.write(message)
+            await websocket.send(message)
 
 
 start_server = websockets.serve(echo, '127.0.0.1', 5678)

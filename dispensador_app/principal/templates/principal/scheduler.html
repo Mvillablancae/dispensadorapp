@@ -1,19 +1,20 @@
 {% extends "principal/base.html" %}
 {% block content %}
     <h1>Programa</h1>
-        Dispositivo: <input type="text" name="fname" id="device"><br>
-        Hora: <input type="text" name="lname" id="hour" placeholder="22:30"><br>
+        Dispositivo: <input type="text" name="fname" id="device">
+        Hora: <input type="text" name="lname" id="hour" placeholder="22:30">
         Fecha: <input type="text" name="sname" id="date" placeholder="01-01-2019"><br>
         <input type="submit" value="Programar" onclick="sendData()">
+        <ul class="list-group" id="list"></ul>
     <script>
         var ws = new WebSocket("ws://127.0.0.1:5678/");
         var messages = document.createElement('ul');
         ws.onmessage = function (event) {
-            //Manejo de Mensaje (Nueva conexión, Nuevo horario o reseteo de horario)
             console.log(event.data);
-            var messages = document.getElementsByTagName('ul')[0],
+            var messages = document.getElementById('list'),
             message = document.createElement('li'),
             content = document.createTextNode(event.data);
+            message.className = "list-group-item";
             message.appendChild(content);
             messages.appendChild(message);
         };
