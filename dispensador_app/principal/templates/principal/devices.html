@@ -1,10 +1,17 @@
 {% extends "principal/base.html" %}
 {% block content %}
     <h1>Dispositivos</h1>
+    Nombre:<input type="text" name="lname" id="hour" placeholder="22:30">
+    Direccion IP: <input type="text" name="sname" id="date" placeholder="01-01-2019"><br>
+    <input type="submit" value="Añadir" onclick="sendData()">
     {% for device in devices %}
-        {% if device.owner == user.username %}
-            <h2>Raspberry {{user.id}}: {{ device.ip_addr }}</h2>
+        {% if device.owner == user %}
+        <p>{{ device.ip_addr }} <a href="#">Editar</a></p>
         {% endif %}
     {% endfor %}
+    <script>
+        function sendData(){
+           console.log("Hola");
+        }
+    </script>
 {% endblock content %}
-

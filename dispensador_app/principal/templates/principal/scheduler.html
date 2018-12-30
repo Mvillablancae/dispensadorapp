@@ -9,6 +9,7 @@
     <script>
         var ws = new WebSocket("ws://127.0.0.1:5678/");
         var messages = document.createElement('ul');
+
         ws.onmessage = function (event) {
             console.log(event.data);
             var messages = document.getElementById('list'),
@@ -18,10 +19,13 @@
             message.appendChild(content);
             messages.appendChild(message);
         };
+
         function sendData(){
             ws.send(document.getElementById("device").value+"_"+document.getElementById("hour").value+"_"+document.getElementById("date").value+"\n")
         }
+
         document.body.appendChild(messages);
     </script>
+
 {% endblock content %}
 
