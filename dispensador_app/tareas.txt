@@ -1,5 +1,3 @@
 Raspberry 1: 192.168.0.12 2018-12-30 18:30 250[g]
 Raspberry 2: 192.168.0.13 2018-12-30 12:30 350[g]
 Raspberry 3: 192.168.0.14 2018-12-30 14:30 230[g]
-asdasd_asdfasdf_asdfasf
-sdfasdf_asdfasdf_asdfasdf

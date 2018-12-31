@@ -21,4 +21,4 @@ def devices(request):
 
 @login_required  
 def scheduler(request):
-    return render(request,'principal/scheduler.html', args)
+    return render(request,'principal/scheduler.html')
