@@ -3,7 +3,7 @@
     <h1>Programa</h1>
         Dispositivo: <input type="text" name="fname" id="device">
         Hora: <input type="text" name="lname" id="hour" placeholder="22:30">
-        Fecha: <input type="text" name="sname" id="date" placeholder="01-01-2019"><br>
+        <p>Fecha: <input type="text" id="datepicker"><br></p>
         <input type="submit" value="Programar" onclick="sendData()">
         <ul class="list-group" id="list"></ul>
     <script>
@@ -11,21 +11,31 @@
         var messages = document.createElement('ul');
 
         ws.onmessage = function (event) {
-            console.log(event.data);
-            var messages = document.getElementById('list'),
-            message = document.createElement('li'),
-            content = document.createTextNode(event.data);
-            message.className = "list-group-item";
-            message.appendChild(content);
-            messages.appendChild(message);
+            if(event.data[0]!='#'){
+                console.log(event.data);
+                var messages = document.getElementById('list'),
+                message = document.createElement('li'),
+                content = document.createTextNode(event.data);
+                message.className = "list-group-item";
+                message.appendChild(content);
+                messages.appendChild(message);
+            }
+            else{
+                print("Mal")
+            }
         };
-
-        function sendData(){
-            ws.send(document.getElementById("device").value+"_"+document.getElementById("hour").value+"_"+document.getElementById("date").value+"\n")
+        //Mensaje: ID_IP_DIA_HORA_GR
+        function sendData(){"_"+document.getElementById("datepicker").value+
+            ws.send(document.getElementById("device").value+"_"+document.getElementById("datepicker").value+"_"+document.getElementById("hour").value+"_"+document.getElementById("hour").value+"_"+"3"+"\n")
         }
 
         document.body.appendChild(messages);
     </script>
 
+    <script>
+        $(document).ready(function() {
+           $("#datepicker").datepicker();
+        });
+    </script>
 {% endblock content %}
 
