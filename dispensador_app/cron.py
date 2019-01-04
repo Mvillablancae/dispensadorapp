@@ -1,18 +1,17 @@
-#!/usr/bin/env python
-import asyncio
-import websockets
 from crontab import CronTab
 from datetime import datetime, date
 
 cron = CronTab(user='m')
 
+
 def crear_trabajo(cron, date, hour, gramos):
-    date = date.strip("/").split()
-    hour = date.strip(":").split()
-    job  = cron.new(command='python Servo_Motor.py '+ gramos)
+    date=date.strip("/").split()
+    hour=date.strip(":").split()
+    job  = cron.new(command='python archivos.py '+gramos)
     job.setall(datetime(int(str(date.today().year)), date[0], date[1], hour[0], hour[1]))
     job.enable()
     cron.write_to_user(user="m")
+
 
 def eliminar_trabajos_pasados(cron):
     for job in cron:
@@ -31,15 +30,3 @@ def eliminar_trabajos_pasados(cron):
         else:
             print("Trabajo aún sin realizar")
         cron.write_to_user(user="m")
-
-async def echo(websocket, path):
-    async for message in websocket:
-        print(message)
-        mesagge=message.strip("_").split()
-        crear_trabajo(cron, message[1], message[2], message[3])
-
-
-start_server = websockets.serve(echo,"0.0.0.0" ,5678)
-print("Inciando WSServer 192.168.0.31:5678")
-asyncio.get_event_loop().run_until_complete(start_server)
-asyncio.get_event_loop().run_forever()
