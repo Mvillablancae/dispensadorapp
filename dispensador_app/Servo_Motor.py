@@ -1,4 +1,12 @@
 import pigpio
+import sys
+
+import os
+print('USER:'+os.environ['USER'])
+print('PATH:'+os.environ['PATH'])
+print('LOGNAME'+os.environ['LOGNAME'])
+print('SHELL'+os.environ['SHELL'])
+
 servo_motor=pigpio.pi()
 def activar_dispensador(gramos):
     servo=23
@@ -11,3 +19,5 @@ def activar_dispensador(gramos):
     servo_motor.set_servo_pulsewidth(servo,angulo_abierto)
     time.sleep(gramos)
     servo_motor.set_servo_pulsewidth(servo,angulo_cerrado)
+
+activar_dispensador(sys.argv[1])
