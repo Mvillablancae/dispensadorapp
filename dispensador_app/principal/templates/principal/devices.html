@@ -1,14 +1,32 @@
 {% extends "principal/base.html" %}
 {% block content %}
     <h1>Dispositivos</h1>
-    Nombre:<input type="text" name="lname" id="hour" placeholder="22:30">
-    Direccion IP: <input type="text" name="sname" id="date" placeholder="01-01-2019"><br>
-    <input type="submit" value="Añadir" onclick="sendData()">
-    {% for device in devices %}
-        {% if device.owner == user %}
-        <p>{{ device.ip_addr }} <a href="#">Editar</a></p>
-        {% endif %}
-    {% endfor %}
+    <form action="" method="POST">
+        {% csrf_token %}
+        Nombre: <input type="text" name="name"/><br/>
+        Dirección IP: <input type="text" name="ip"/><br/>
+        <input type="submit" value="Registrar"/>
+    </form>
+    <br>
+    <table class="table table-hover">
+        <thead>
+          <tr>
+            <th>Dispositivo</th>
+            <th>Dirección IP</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            {% for device in devices %}
+                {% if device.owner == user %}
+                <td>{{ device.device_name }}</td>
+                <td>{{ device.ip_addr }}</td>
+                {% endif %}
+            {% endfor %}
+          </tr>
+        </tbody>
+      </table>
+    
     <script>
         function sendData(){
            console.log("Hola");

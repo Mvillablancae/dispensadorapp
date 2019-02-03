@@ -1,5 +1,6 @@
 {% extends "principal/base.html" %}
 {% block content %}
+
     {% for device in devices %}
         {% if device.owner == user %}
         <a class="dropdown-item" href="#">{{ device.ip_addr }}</a>

@@ -2,6 +2,7 @@ import pigpio
 import sys
 
 import os
+
 print('USER:'+os.environ['USER'])
 print('PATH:'+os.environ['PATH'])
 print('LOGNAME'+os.environ['LOGNAME'])

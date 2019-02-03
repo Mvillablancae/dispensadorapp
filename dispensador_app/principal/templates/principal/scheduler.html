@@ -6,8 +6,8 @@
             <div class="dropdown">
                 <div class="input-group">
                     <div class="input-group-btn">
-                        <button class="btn btn-secondary dropdown-toggle" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                            Dispositivos
+                        Dispositivos: <button class="btn btn-secondary dropdown-toggle" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                            Opciones
                         </button>
                         <div class="dropdown-menu" onchange="selectMenu1" aria-labelledby="dropdownMenuButton">
                         {% for device in devices %}
@@ -26,35 +26,41 @@
     <div class="row-6">
         <input type="submit" value="Programar" onclick="sendData()">
     </div>
+    <h1 class='prueba invisible' id='prueba'>asd</h1>
     <ul class="list-group" id="list"></ul>
-    <script>
-        var ws = new WebSocket("ws://192.168.0.31:5678/");
+    <script> 
+        
         //var ws = new WebSocket("ws://127.0.0.1:5678/");
-        var messages = document.createElement('ul');
-        ws.onmessage = function (event) {
-            if(event.data[0]!='#'){
-                console.log(event.data);
-                var messages = document.getElementById('list'),
-                message = document.createElement('li'),
-                content = document.createTextNode(event.data);
-                message.className = "list-group-item";
-                message.appendChild(content);
-                messages.appendChild(message);
-            }
-            else{
-                print("Mal")
-            }
-        };
+        //var messages = document.createElement('ul');
+        //ws.onmessage = function (event) {
+        //    if(event.data[0]!='#'){
+        //        console.log(event.data);
+        //        var messages = document.getElementById('list'),
+        //        message = document.createElement('li'),
+        //        content = document.createTextNode(event.data);
+        //        message.className = "list-group-item";
+        //        message.appendChild(content);
+        //        messages.appendChild(message);
+        //    }
+        //    else{
+        //        print("Mal")
+        //    }
+        //};
         //Mensaje: ID_IP_DIA_HORA_GR
         function sendData(){
-            ws.send(document.getElementById("dropdownMenuButton").value+"_"+document.getElementById("datepicker").value+"_"+document.getElementById("hour").value
-            +"_"+document.getElementById("gramos").value+"\n")
+            var ws = new WebSocket("ws://"+$("#prueba").text()+":5678/");
+            console.log($("#prueba").text()+"_"+document.getElementById("datepicker").value+"_"+document.getElementById("hour").value
+            +"_"+document.getElementById("gramos").value+"\n");
+            ws.send($("#prueba").text()+"_"+document.getElementById("datepicker").value+"_"+document.getElementById("hour").value
+            +"_"+document.getElementById("gramos").value+"\n");
+            ws.close();
         }
-        document.body.appendChild(messages);
-
+        //document.body.appendChild(messages);
 
         $(".dropdown-menu a ").click(function(){
             $(this).parents(".input-group-btn").find('.btn').text($(this).text());
+            //ws.send("traer_info")-> mostrar info respecto a ese dispositivo
+            $("#prueba").text($(this).text());
         });
 
     </script>

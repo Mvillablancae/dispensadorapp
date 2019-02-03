@@ -8,6 +8,7 @@ import sys
 
 cron = CronTab(user='pi')
 
+
 #cron.env['SHELL']='/bin/bash'
 #cron.env['PATH']= '/home/pi/.local/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:/usr/local/gam$
 #cron.env['LOGNAME']= 'pi'
