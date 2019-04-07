@@ -1,67 +1,123 @@
 {% extends "principal/base.html" %}
 {% block content %}
-    <div class="row"><h1>Tareas Programadas</h1></div>
-    <div class="row-6">
-        <p>
-            <div class="dropdown">
-                <div class="input-group">
-                    <div class="input-group-btn">
-                        Dispositivos: <button class="btn btn-secondary dropdown-toggle" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                            Opciones
-                        </button>
-                        <div class="dropdown-menu" onchange="selectMenu1" aria-labelledby="dropdownMenuButton">
-                        {% for device in devices %}
-                            {% if device.owner == user %}
-                            <a class="dropdown-item" href="#">{{ device.ip_addr }}</a>
-                            {% endif %}
-                        {% endfor %}
+    <div class="row" ><h1>Tareas Programadas</h1></div>
+    <div class="col">
+        <div class="row" style="margin:1%">
+            <p style="margin:1%"><input type="text" name="lname" id="hour" placeholder="Hora hh:mm"></p>
+            <p style="margin:1%"><input type="text" id="datepicker" placeholder="Fecha  dd/mm"><br></p>
+            <p style="margin:1%"><input type="text" id="gramos" placeholder="Cantidad de gramos"><br></p>
+            <p style="margin:1%">
+                <div class="dropdown">
+                    <div class="input-group">
+                        <div class="input-group-btn">
+                            <button class="btn btn-secondary dropdown-toggle" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                Dispositivos
+                            </button>
+                            <div class="dropdown-menu" onchange="selectMenu1" aria-labelledby="dropdownMenuButton">
+                            {% for device in devices %}
+                                {% if device.owner == user %}
+                                <a class="dropdown-item" href="#">{{ device.ip_addr }}</a>
+                                {% endif %}
+                            {% endfor %}
                         </div>  
                     </div>
                 </div>
             </p>
-            <p>Hora<input type="text" name="lname" id="hour" placeholder="hh:mm"></p>
-            <p>Fecha<input type="text" id="datepicker" placeholder="dd/mm"><br></p>
-            <p>Gramos<input type="text" id="gramos" placeholder="250"><br></p>
+        </div>
+        <div class="col-6" style="margin:1%">
+            <input type="submit" class="btn btn-outline-primary" value="Programar" onclick="sendData()">
+        </div>
     </div>
-    <div class="row-6">
-        <input type="submit" value="Programar" onclick="sendData()">
+    <div class="col">
+        <ul class="list-group" id="list"></ul> 
+        <table class="table" id="table">
+            <thead>
+              <tr>
+                <th scope="col">Comida</th>
+                <th scope="col">Hora</th>
+                <th scope="col">Fecha</th>
+                <th scope="col">Editar</th>
+                <th scope="col">Eliminar</th>
+              </tr>
+            </thead>
+            <tbody>
+
+            </tbody>
+          </table>
     </div>
+
     <h1 class='prueba invisible' id='prueba'>asd</h1>
-    <ul class="list-group" id="list"></ul>
+    
     <script> 
-        
-        //var ws = new WebSocket("ws://127.0.0.1:5678/");
-        //var messages = document.createElement('ul');
-        //ws.onmessage = function (event) {
-        //    if(event.data[0]!='#'){
-        //        console.log(event.data);
-        //        var messages = document.getElementById('list'),
-        //        message = document.createElement('li'),
-        //        content = document.createTextNode(event.data);
-        //        message.className = "list-group-item";
-        //        message.appendChild(content);
-        //        messages.appendChild(message);
-        //    }
-        //    else{
-        //        print("Mal")
-        //    }
-        //};
+        var ws = new WebSocket("ws://127.0.0.1:5678/");
+        //$("#prueba").text()
+        //var ws = new WebSocket("ws://192.168.0.24:5678/");
+        var messages = document.createElement('ul');
+        ws.onmessage = function (event) {
+            console.log(event.data);
+            if(event.data[0]=='!'){
+                console.log(event.data);
+                var messages = document.getElementById('list'),
+                message = document.createElement('li'),
+                content = document.createTextNode(event.data);
+                message.className = "list-group-item";
+                message.appendChild(content);
+                messages.appendChild(message);
+            }
+            else if(event.data[0]!='#'){
+                console.log("Esto llego: "+event.data);
+                var table = document.getElementById('table');
+                //AGREGAR ID Y SE RESUELVE LA VIDAAAAAAAAAAAAA
+                var row = table.insertRow(1);
+                //mensaje debería ser tipo: id_comando_hora_fecha_gramos
+                row.classList.add("prueba");
+                var cell1 = row.insertCell(0);
+                var cell2 = row.insertCell(1);
+                var cell3 = row.insertCell(2);
+                var cell4 = row.insertCell(3);
+                var cell5 = row.insertCell(4);
+                cell1.innerHTML = "150";
+                cell2.innerHTML = "22:50";
+                cell3.innerHTML = "3/10";
+                cell4.innerHTML = '<button type="button" class="btn btn-outline-info">Editar</button>';
+                cell5.innerHTML = '<button type="button" class="btn btn-outline-danger">Eliminar</button>';
+                //var messages = document.getElementById('list'),
+                //message = document.createElement('li'),
+                //content = document.createTextNode(event.data);
+                //message.className = "list-group-item";
+                //message.appendChild(content);
+                //messages.appendChild(message);
+            }
+        };
         //Mensaje: ID_IP_DIA_HORA_GR
+
         function sendData(){
-            var ws = new WebSocket("ws://"+$("#prueba").text()+":5678/");
-            console.log($("#prueba").text()+"_"+document.getElementById("datepicker").value+"_"+document.getElementById("hour").value
+            console.log("Agregar_"+document.getElementById("datepicker").value+"_"+document.getElementById("hour").value
             +"_"+document.getElementById("gramos").value+"\n");
-            ws.send($("#prueba").text()+"_"+document.getElementById("datepicker").value+"_"+document.getElementById("hour").value
+            ws.send("Agregar_"+document.getElementById("datepicker").value+"_"+document.getElementById("hour").value
             +"_"+document.getElementById("gramos").value+"\n");
-            ws.close();
+            //ws.close();
         }
-        //document.body.appendChild(messages);
+        function UpdateData(){
+            console.log("Actualizar_"+document.getElementById("datepicker").value+"_"+document.getElementById("hour").value
+            +"_"+document.getElementById("gramos").value+"\n");
+            ws.send("Actualizar_"+document.getElementById("datepicker").value+"_"+document.getElementById("hour").value
+            +"_"+document.getElementById("gramos").value+"\n");
+        }
+        function DeleteData(){
+            console.log($("#prueba").text()+"_"+"Eliminar_"+document.getElementById("datepicker").value+"_"+document.getElementById("hour").value
+            +"_"+document.getElementById("gramos").value+"\n");
+            ws.send("Eliminar_"+document.getElementById("datepicker").value+"_"+document.getElementById("hour").value
+            +"_"+document.getElementById("gramos").value+"\n");
+        }
+        document.body.appendChild(messages);
 
         $(".dropdown-menu a ").click(function(){
             $(this).parents(".input-group-btn").find('.btn').text($(this).text());
             //ws.send("traer_info")-> mostrar info respecto a ese dispositivo
             $("#prueba").text($(this).text());
         });
+        
 
     </script>
 

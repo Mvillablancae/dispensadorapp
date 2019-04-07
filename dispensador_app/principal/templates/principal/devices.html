@@ -16,14 +16,16 @@
           </tr>
         </thead>
         <tbody>
-          <tr>
+          
             {% for device in devices %}
+            <tr>
                 {% if device.owner == user %}
                 <td>{{ device.device_name }}</td>
                 <td>{{ device.ip_addr }}</td>
                 {% endif %}
+            </tr>
             {% endfor %}
-          </tr>
+          
         </tbody>
       </table>
     
