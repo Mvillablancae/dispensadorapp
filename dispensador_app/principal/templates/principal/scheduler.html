@@ -24,7 +24,7 @@
                 </div>
             </p>
         </div>
-        <div class="col-6" style="margin:1%">
+        <div class="col-8" style="margin:1%">
             <input type="submit" class="btn btn-outline-primary" value="Programar" onclick="sendData()">
         </div>
     </div>
@@ -33,9 +33,10 @@
         <table class="table" id="table">
             <thead>
               <tr>
-                <th scope="col">Comida</th>
+                <th scope="col">Id</th>
                 <th scope="col">Hora</th>
                 <th scope="col">Fecha</th>
+                <th scope="col">Comida</th>
                 <th scope="col">Editar</th>
                 <th scope="col">Eliminar</th>
               </tr>
@@ -50,6 +51,10 @@
     
     <script> 
         var ws = new WebSocket("ws://127.0.0.1:5678/");
+        ws.onopen = function() {
+            ws.send("NC_open"); //Notifica nueva conexión
+        };
+        
         //$("#prueba").text()
         //var ws = new WebSocket("ws://192.168.0.24:5678/");
         var messages = document.createElement('ul');
@@ -67,20 +72,25 @@
             else if(event.data[0]!='#'){
                 console.log("Esto llego: "+event.data);
                 var table = document.getElementById('table');
+                var trabajo = event.data.split("_");
+                console.log("Esparcido: "+trabajo);
                 //AGREGAR ID Y SE RESUELVE LA VIDAAAAAAAAAAAAA
                 var row = table.insertRow(1);
                 //mensaje debería ser tipo: id_comando_hora_fecha_gramos
-                row.classList.add("prueba");
+                row.classList.add(trabajo[0]);
+                row.setAttribute("Id",String(trabajo[0]));
                 var cell1 = row.insertCell(0);
                 var cell2 = row.insertCell(1);
                 var cell3 = row.insertCell(2);
                 var cell4 = row.insertCell(3);
                 var cell5 = row.insertCell(4);
-                cell1.innerHTML = "150";
-                cell2.innerHTML = "22:50";
-                cell3.innerHTML = "3/10";
-                cell4.innerHTML = '<button type="button" class="btn btn-outline-info">Editar</button>';
-                cell5.innerHTML = '<button type="button" class="btn btn-outline-danger">Eliminar</button>';
+                var cell6 = row.insertCell(5);
+                cell1.innerHTML = trabajo[0];
+                cell2.innerHTML = trabajo[2];
+                cell3.innerHTML = trabajo[1];
+                cell4.innerHTML = trabajo[3] + '[g]';
+                cell5.innerHTML = '<button type="button" class="btn btn-outline-primary" onclick="UpdateData('+trabajo[0]+')">Editar</button>';
+                cell6.innerHTML = '<button type="button" class="btn btn-outline-danger" onclick="DeleteData('+trabajo[0]+')">Eliminar</button>';
                 //var messages = document.getElementById('list'),
                 //message = document.createElement('li'),
                 //content = document.createTextNode(event.data);
@@ -89,8 +99,8 @@
                 //messages.appendChild(message);
             }
         };
-        //Mensaje: ID_IP_DIA_HORA_GR
 
+        //Mensaje: ID_IP_DIA_HORA_GR
         function sendData(){
             console.log("Agregar_"+document.getElementById("datepicker").value+"_"+document.getElementById("hour").value
             +"_"+document.getElementById("gramos").value+"\n");
@@ -98,17 +108,40 @@
             +"_"+document.getElementById("gramos").value+"\n");
             //ws.close();
         }
-        function UpdateData(){
+        function UpdateData(eleccion){
+            var row = document.getElementById(String(eleccion));
+            var id = row.cells[0].innerHTML;
+            var hora = row.cells[1].innerHTML;
+            var fecha = row.cells[2].innerHTML;
+            var comida = row.cells[3].innerHTML;
+            row.cells[1].innerHTML = '<p style="margin:1%"><input type="text" name="lname" id="hour_'+id+'" placeholder="Hora hh:mm"></p>';
+            row.cells[2].innerHTML = '<p style="margin:1%"><input type="text" id="datepicker_'+id+'" placeholder="Fecha  dd/mm"><br></p>';
+            row.cells[3].innerHTML = '<p style="margin:1%"><input type="text" id="gramos_'+id+'" placeholder="Cantidad de gramos"><br></p>';
+            row.cells[4].innerHTML = '<button type="button" class="btn btn-outline-success" onclick="EditData('+id+')">Actualizar</button><button type="button" class="btn btn-outline-danger" onclick="Cancell('+id+')">Cancelar</button>';
             console.log("Actualizar_"+document.getElementById("datepicker").value+"_"+document.getElementById("hour").value
             +"_"+document.getElementById("gramos").value+"\n");
-            ws.send("Actualizar_"+document.getElementById("datepicker").value+"_"+document.getElementById("hour").value
-            +"_"+document.getElementById("gramos").value+"\n");
+            //ws.send("Actualizar_"+document.getElementById("datepicker").value+"_"+document.getElementById("hour").value
+            //+"_"+document.getElementById("gramos").value+"\n");
         }
-        function DeleteData(){
-            console.log($("#prueba").text()+"_"+"Eliminar_"+document.getElementById("datepicker").value+"_"+document.getElementById("hour").value
-            +"_"+document.getElementById("gramos").value+"\n");
-            ws.send("Eliminar_"+document.getElementById("datepicker").value+"_"+document.getElementById("hour").value
-            +"_"+document.getElementById("gramos").value+"\n");
+        function EditData(eleccion){
+            var row = document.getElementById(String(eleccion));
+            console.log("Actualizar_"+document.getElementById("datepicker_"+eleccion).value+"_"+document.getElementById("hour_"+eleccion).value
+            +"_"+document.getElementById("gramos_"+eleccion).value+"\n");
+            ws.send("Actualizar_"+document.getElementById("datepicker_"+eleccion).value+"_"+document.getElementById("hour_"+eleccion).value
+            +"_"+document.getElementById("gramos_"+eleccion).value+"_"+eleccion+"\n");
+            row.cells[1].innerHTML = document.getElementById("hour_"+eleccion).value;
+            row.cells[2].innerHTML = document.getElementById("datepicker_"+eleccion).value;
+            row.cells[3].innerHTML = document.getElementById("gramos_"+eleccion).value+'[g]';
+            row.cells[4].innerHTML = '<button type="button" class="btn btn-outline-primary" onclick="UpdateData('+eleccion+')">Editar</button>';
+        }
+        
+        function DeleteData(eleccion){
+            console.log($("#prueba").text()+"_"+"Eliminar_"+document.getElementById(String(eleccion)).cells[0].innerHTML+"_"+document.getElementById(String(eleccion)).cells[1].innerHTML
+            +"_"+document.getElementById(String(eleccion)).cells[2].innerHTML+"_"+eleccion+"\n");
+            ws.send("Eliminar_"+document.getElementById(String(eleccion)).cells[2].innerHTML+"_"+document.getElementById(String(eleccion)).cells[1].innerHTML
+            +"_"+document.getElementById(String(eleccion)).cells[0].innerHTML+"_"+eleccion+"\n");
+            document.getElementById('table').deleteRow(document.getElementById(String(eleccion)).rowIndex);
+
         }
         document.body.appendChild(messages);
 
